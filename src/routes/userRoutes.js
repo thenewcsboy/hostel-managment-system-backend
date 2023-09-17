@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const userController = require('../controllers/userController');
-const authMiddleware = require('../middleware/authMiddleware');
+const { authenticateAdmin, authenticateUser } = require('../middleware/authMiddleware');
 
 // Register a new user
 router.post('/register', userController.register);
@@ -10,18 +10,18 @@ router.post('/register', userController.register);
 router.post('/login', userController.login);
 
 // Get user profile (requires authentication)
-router.get('/profile', authMiddleware.authenticateUser, userController.getProfile);
+router.get('/profile', authenticateUser, userController.getProfile);
 
 // Get all users (admin access)
-router.get('/all', authMiddleware.authenticateAdmin, userController.getAllUsers);
+router.get('/all', authenticateUser, authenticateAdmin, userController.getAllUsers);
 
 // Get user details by ID (admin access)
-router.get('/:userId', authMiddleware.authenticateAdmin, userController.getUserDetails);
+router.get('/:userId', authenticateUser, authenticateAdmin, userController.getUserDetails);
 
 // Update user details by ID (admin access)
-router.put('/:userId', authMiddleware.authenticateAdmin, userController.updateUser);
+router.put('/:userId', authenticateUser, authenticateAdmin, userController.updateUser);
 
 // Delete a user by ID (admin access)
-router.delete('/:userId', authMiddleware.authenticateAdmin, userController.deleteUser);
+router.delete('/:userId', authenticateUser, authenticateAdmin, userController.deleteUser);
 
 module.exports = router;

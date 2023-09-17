@@ -1,4 +1,6 @@
 const User = require("../models/userModel");
+require("dotenv").config();
+const jwt = require("jsonwebtoken");
 
 exports.register = async (req, res, next) => {
     try {
@@ -34,8 +36,21 @@ exports.login = async (req, res, next) => {
             return res.status(401).json({ message: 'Invalid credentials' });
         }
 
-        // Respond with a success message or token (for authentication)
-        res.status(200).json({ message: 'Login successful' });
+        // Create a JWT token with user data (you can customize the payload)
+        const token = jwt.sign({ userId: user._id, email: user.email, role: user.role }, process.env.JWT_KEY, {
+            expiresIn: '1h', // Token expiration time (adjust as needed)
+        });
+
+        // Set the token as an HttpOnly cookie
+        res.cookie('jwtToken', token, {
+            maxAge: 3600000,
+            httpOnly: true,
+            secure: true, // Enable this in production to ensure the cookie is sent only over HTTPS
+            sameSite: 'strict', // Adjust the SameSite attribute as needed
+        });
+
+        // Respond with the token
+        res.status(200).json({ message: 'Login successful', token: token });
     } catch (error) {
         next(error);
     }

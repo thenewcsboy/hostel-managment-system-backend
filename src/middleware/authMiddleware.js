@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/userModel');
+require("dotenv").config();
 
 // Middleware to authenticate a user using JWT
 exports.authenticateUser = async (req, res, next) => {
@@ -12,7 +13,7 @@ exports.authenticateUser = async (req, res, next) => {
         }
 
         // Verify the token
-        const decodedToken = jwt.verify(token, process.env.JWT_key);
+        const decodedToken = jwt.verify(token, process.env.JWT_KEY);
 
         // Find the user associated with the token
         const user = await User.findById(decodedToken.userId);
