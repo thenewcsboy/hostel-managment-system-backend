@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
-
 const userSchema = new mongoose.Schema({
     name: {
         type: String,
@@ -13,6 +12,7 @@ const userSchema = new mongoose.Schema({
         trim: true,
         lowercase: true,
     },
+
     password: {
         type: String,
         required: true,
@@ -24,6 +24,19 @@ const userSchema = new mongoose.Schema({
         enum: ['student', 'administrator'],
         default: 'student', // Default role for new users
     },
+    registrationNumber: {
+        type: String,
+        required: true,
+    },
+    fatherName: String,
+    mobileNumber: String,
+    branch: String,
+    batchYear: {
+        type: String,
+        match: /^\d{4}$/, // Ensure it's in a 4-digit year format
+    },
+    address: String,
+    bloodGroup: String,
 });
 
 // Hash the password before saving it to the database
@@ -53,3 +66,6 @@ userSchema.methods.comparePassword = async function (password) {
 const User = mongoose.model('User', userSchema);
 
 module.exports = User;
+
+
+

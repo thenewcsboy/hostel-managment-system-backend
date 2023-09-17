@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken");
 
 exports.register = async (req, res, next) => {
     try {
-        const { name, email, password } = req.body;
+        const { name, email, password, registrationNumber } = req.body;
 
         // Check if a user with the same email already exists
         const existingUser = await User.findOne({ email });
@@ -14,7 +14,7 @@ exports.register = async (req, res, next) => {
         }
 
         // Create a new user
-        const newUser = new User({ name, email, password });
+        const newUser = new User({ name, email, password, registrationNumber });
         await newUser.save();
 
         // Respond with a success message
@@ -68,8 +68,10 @@ exports.getProfile = async (req, res, next) => {
         // Respond with the user's profile data (you can customize this as needed)
         res.status(200).json({
             name: user.name,
+            MobileNumber: user.mobileNumber,
             email: user.email,
-            role: user.role,
+            registrationNumber: user.registrationNumber,
+            role: user.role
         });
     } catch (error) {
         next(error);
