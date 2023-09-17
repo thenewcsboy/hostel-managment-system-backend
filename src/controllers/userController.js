@@ -136,3 +136,12 @@ exports.deleteUser = async (req, res, next) => {
         next(error);
     }
 };
+
+// Logout a user by clearing the JWT token cookie
+exports.logoutUser = (req, res) => {
+    // Clear the JWT token cookie on the client-side
+    const token = req.headers.authorization.split(' ')[1]; // Assumes a Bearer token
+    res.clearCookie(token, { path: '/' });
+
+    res.status(200).json({ message: 'Logout successful' });
+};

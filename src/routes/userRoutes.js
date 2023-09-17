@@ -24,4 +24,7 @@ router.put('/:userId', authenticateUser, authenticateAdmin, userController.updat
 // Delete a user by ID (admin access)
 router.delete('/:userId', authenticateUser, authenticateAdmin, userController.deleteUser);
 
+// Protected route for logging out a user
+router.post('/logout', authenticateUser, userController.logoutUser);
+
 module.exports = router;
