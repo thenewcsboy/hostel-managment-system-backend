@@ -1,6 +1,7 @@
 const User = require("../models/userModel");
 require("dotenv").config();
 const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
 
 exports.register = async (req, res, next) => {
     try {
@@ -133,7 +134,7 @@ exports.deleteUser = async (req, res, next) => {
             return res.status(404).json({ message: 'User not found' });
         }
 
-        res.status(204).send();
+        res.status(200).json({ message: "user deleted" });
     } catch (error) {
         next(error);
     }
@@ -146,4 +147,54 @@ exports.logoutUser = (req, res) => {
     res.clearCookie(token, { path: '/' });
 
     res.status(200).json({ message: 'Logout successful' });
+};
+
+// Change the role of a user by ID
+exports.changeUserRole = async (req, res, next) => {
+    try {
+        const { userId, newRole } = req.body; // Assuming you pass the user ID and new role in the request body
+
+        // Find the user by ID
+        const user = await User.findById(userId);
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        // Update the user's role
+        user.role = newRole;
+
+        // Save the updated user
+        await user.save();
+
+        res.status(200).json({ message: 'User role updated successfully', user });
+    } catch (error) {
+        next(error);
+    }
+};
+
+exports.changePassword = async (req, res, next) => {
+    try {
+        const { email, currentPassword, newPassword } = req.body;
+
+        // Find the user by email
+        const user = await User.findOne({ email }).select('+password');
+
+        // Check if the user exists and the password is correct
+        if (!user || !(await user.comparePassword(currentPassword))) {
+            return res.status(401).json({ message: 'Invalid credentials' });
+        }
+
+        // Update the User's password
+        user.password = newPassword;
+
+        // Save the updated Password
+        await user.save();
+
+        // Respond with a success message
+        res.status(200).json({ message: 'Password changed successfully' });
+
+    } catch (error) {
+        next(error);
+    }
 };

@@ -25,6 +25,7 @@ exports.authenticateUser = async (req, res, next) => {
         // Attach the user to the request object for further use
         req.user = user;
 
+
         // Proceed to the next middleware or route
         next();
     } catch (error) {

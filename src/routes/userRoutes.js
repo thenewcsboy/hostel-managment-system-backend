@@ -27,4 +27,11 @@ router.delete('/:userId', authenticateUser, authenticateAdmin, userController.de
 // Protected route for logging out a user
 router.post('/logout', authenticateUser, userController.logoutUser);
 
+// Route to change the role of a user
+router.post('/change-role', authenticateUser, authenticateAdmin, userController.changeUserRole);
+
+// Route to change the user's password
+router.post('/change-password', authenticateUser, userController.changePassword);
+
+
 module.exports = router;
